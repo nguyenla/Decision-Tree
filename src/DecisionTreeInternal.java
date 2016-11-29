@@ -152,32 +152,30 @@ public class DecisionTreeInternal extends DecisionTree {
 	private double expectedEntropy(Attribute attribute, InstanceSet examples) throws DecisionTreeException {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: use the Distribution class
-		// expected entropy is computed as 
-		// summation of D (distinct values) entropy * proportion of training samples
 		
 		Attribute classAttribute = examples.getAttributeSet().getClassAttribute();
 		int classAttributeIndex = examples.getAttributeSet().getAttributeIndex(classAttribute);
 		int curAttributeIndex = examples.getAttributeSet().getAttributeIndex(attribute);
-		// int numValues = attribute.getValues().length;
 		HashMap<String, Distribution> distArray = new HashMap<String, Distribution>();
 		
-		// Create one distribution object for each value of the given attribute
-		// Initialize each distribution object
+		// Create one Distribution object for each value of the given attribute
+		// Initialize each Distribution object
 		for (String val: attribute.getValues()) {
 			Distribution dist = new Distribution(classAttribute);
 			distArray.put(val, dist);
 		}
 		
+		// Incrementing the frequency of the corresponding Distribution objects
 		for (Instance ex: examples.getInstances()) {
 			String classValue = ex.getValues()[classAttributeIndex];
 			String curValue = ex.getValues()[curAttributeIndex];
 			distArray.get(curValue).incrementFrequency(classValue);
 		}
 		
-		// Compute probabilities for each distribution object
+		// Compute probabilities for each Distribution object
 		for (String key: distArray.keySet()) {
 			distArray.get(key).computeProbabilitiesFromFrequencies();
-//			dist.printFrequencies(); // for debugging later
+//			dist.printFrequencies(); // for debugging
 		}
 		
 		double totalEntropy = 0.00;

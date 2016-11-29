@@ -36,7 +36,16 @@ public class DecisionTreeLeaf extends DecisionTree {
 	private String computeDecision(InstanceSet examples) {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: use the Distribution class
-		return null;
+		// COMPLETED, NEED REVIEW
+		Attribute classAttribute = examples.getAttributeSet().getClassAttribute();
+		int classAttributeIndex = examples.getAttributeSet().getAttributeIndex(classAttribute);
+		
+		Distribution dist = new Distribution(classAttribute);
+		for (Instance ex: examples.getInstances()) {
+			String classValue = ex.getValues()[classAttributeIndex];
+			dist.incrementFrequency(classValue);
+		}
+		return dist.getNameOfMaxFrequency();
 	}
 
 	/*
