@@ -76,7 +76,20 @@ public class DecisionTreeInternal extends DecisionTree {
 			ArrayList<Attribute> attributes) throws DecisionTreeException {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: the expectedEntropy() method will be needed
-		return null;
+		// COMPLETED, NEED REVIEW
+		Attribute chosen = null;
+		double minEntropy = Double.MAX_VALUE;
+		
+		// Loop through all the possible attributes and return the attribute
+		// that has the lowest expected entropy
+		for (Attribute attr : attributes) {
+			double entropy = expectedEntropy(attr, examples);
+			if (entropy < minEntropy) {
+				chosen = attr;
+				minEntropy = entropy;
+			}
+		}		
+		return chosen;
 	}
 
 	/**
@@ -109,7 +122,6 @@ public class DecisionTreeInternal extends DecisionTree {
 				matches.add(instance);
 			}
 		}
-
 		return new InstanceSet(examples.getAttributeSet(), matches);
 	}
 
@@ -133,9 +145,20 @@ public class DecisionTreeInternal extends DecisionTree {
 			ArrayList<Attribute> attributes) throws DecisionTreeException {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: the getMatches() method will be useful
-		return null;
-	}
+		// COMPLETED, NEED REVIEW
+		
+		// The map that will be returned later
+		HashMap<String, DecisionTree> map = new HashMap<String, DecisionTree>();
 
+		// Create one DecisionTree for each value of the split attribute 
+		// using the instanceSet returned from the getMatches() method
+		for (String val : splitAttribute.getValues()) {
+			InstanceSet tempSet = getMatches(splitAttribute, val, examples);
+			DecisionTree tree = new DecisionTreeInternal(tempSet, attributes, val, depth+1);
+			map.put(val, tree);
+		}
+		return map;
+	}
 
 	/**
 	 * Compute the expected entropy of the given attribute, based on the given
@@ -197,7 +220,12 @@ public class DecisionTreeInternal extends DecisionTree {
 	public String decide(AttributeSet attributes, Instance instance) {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: use the Distribution class
-		return null;
+		// Recursively call the decide method on the decision tree that corresponds 
+		// to the value of the split attribute of this instance
+		// This tree is found by looking it up in the field children
+		int splitIndex = attributes.getAttributeIndex(splitAttribute);
+		String splitVal = instance.getValues()[splitIndex];
+		return children.get(splitVal).decide(attributes, instance);
 	}
 
 	/* (non-Javadoc)
