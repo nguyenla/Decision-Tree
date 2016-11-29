@@ -1,0 +1,16 @@
+@relation weather.symbolic
+
+@attribute color {blue, green, yellow}
+@attribute sound {quiet, loud}
+@attribute texture {rough, smooth}
+@attribute material {wood, metal, fibreglass}
+
+@data
+blue, quiet, rough, wood
+blue, loud, rough, wood
+blue, quiet, smooth, metal
+blue, loud, smooth, metal
+green, quiet, smooth, wood
+green, loud, smooth, wood
+yellow, quiet, rough, fibreglass
+yellow, loud, rough, fibreglass

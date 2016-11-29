@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -151,7 +152,44 @@ public class DecisionTreeInternal extends DecisionTree {
 	private double expectedEntropy(Attribute attribute, InstanceSet examples) throws DecisionTreeException {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: use the Distribution class
-		return 0.0;
+		// expected entropy is computed as 
+		// summation of D (distinct values) entropy * proportion of training samples
+		
+		Attribute classAttribute = examples.getAttributeSet().getClassAttribute();
+		int classAttributeIndex = examples.getAttributeSet().getAttributeIndex(classAttribute);
+		int curAttributeIndex = examples.getAttributeSet().getAttributeIndex(attribute);
+		// int numValues = attribute.getValues().length;
+		HashMap<String, Distribution> distArray = new HashMap<String, Distribution>();
+		
+		// Create one distribution object for each value of the given attribute
+		// Initialize each distribution object
+		for (String val: attribute.getValues()) {
+			Distribution dist = new Distribution(classAttribute);
+			distArray.put(val, dist);
+		}
+		
+		for (Instance ex: examples.getInstances()) {
+			String classValue = ex.getValues()[classAttributeIndex];
+			String curValue = ex.getValues()[curAttributeIndex];
+			distArray.get(curValue).incrementFrequency(classValue);
+		}
+		
+		// Compute probabilities for each distribution object
+		for (String key: distArray.keySet()) {
+			distArray.get(key).computeProbabilitiesFromFrequencies();
+//			dist.printFrequencies(); // for debugging later
+		}
+		
+		double totalEntropy = 0.00;
+		int totalFrequency = 0;
+		
+		for (String key: distArray.keySet()) {
+			Distribution temp = distArray.get(key);
+			totalFrequency += temp.getTotalFrequencies();
+			totalEntropy += temp.getEntropy() * temp.getTotalFrequencies();
+		}
+		
+		return totalEntropy / totalFrequency;
 	}
 
 	/* (non-Javadoc)
@@ -174,5 +212,14 @@ public class DecisionTreeInternal extends DecisionTree {
 		for (DecisionTree child : children.values()) {
 			child.print();
 		}
+	}
+	
+	// This main method is created solely to test the expectedEntropy method.
+	// To run the test, make the expectedEntropy method static first
+	public static void main(String[] args) throws DecisionTreeException, IOException {
+		String[] values = {"rough", "smooth"}; 
+		Attribute attr = new Attribute("texture", values);
+		InstanceSet trainingSet = new InstanceSet("test.arff");
+		// System.out.println("Expected entropy is: " + expectedEntropy(attr, trainingSet));
 	}
 }
