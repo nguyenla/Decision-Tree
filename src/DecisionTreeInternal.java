@@ -154,7 +154,7 @@ public class DecisionTreeInternal extends DecisionTree {
 		// using the instanceSet returned from the getMatches() method
 		for (String val : splitAttribute.getValues()) {
 			InstanceSet tempSet = getMatches(splitAttribute, val, examples);
-			DecisionTree tree = new DecisionTreeInternal(tempSet, attributes, val, depth+1);
+			DecisionTree tree = DecisionTree.constructDecisionTree(tempSet, attributes, examples, val, depth+1);
 			map.put(val, tree);
 		}
 		return map;
@@ -220,6 +220,8 @@ public class DecisionTreeInternal extends DecisionTree {
 	public String decide(AttributeSet attributes, Instance instance) {
 		// TODO: fill in the body of this method and fix the return statement
 		// HINT: use the Distribution class
+		
+		// NEED REVIEW, WHY SHOULD WE USE THE DISTRIBUTION CLASS
 		// Recursively call the decide method on the decision tree that corresponds 
 		// to the value of the split attribute of this instance
 		// This tree is found by looking it up in the field children
@@ -243,9 +245,9 @@ public class DecisionTreeInternal extends DecisionTree {
 	// This main method is created solely to test the expectedEntropy method.
 	// To run the test, make the expectedEntropy method static first
 	public static void main(String[] args) throws DecisionTreeException, IOException {
-		String[] values = {"rough", "smooth"}; 
-		Attribute attr = new Attribute("texture", values);
-		InstanceSet trainingSet = new InstanceSet("test.arff");
+		// String[] values = {"rough", "smooth"}; 
+		// Attribute attr = new Attribute("texture", values);
+		// InstanceSet trainingSet = new InstanceSet("test.arff");
 		// System.out.println("Expected entropy is: " + expectedEntropy(attr, trainingSet));
 	}
 }

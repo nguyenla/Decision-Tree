@@ -68,7 +68,8 @@ public abstract class DecisionTree {
 		} else {
 			// TODO: fix the following line.
 			// HINT: it should begin "return new ..."
-			return null;
+			// Need review
+			return new DecisionTreeInternal(examples, attributes, label, depth + 1);
 		}
 	}
 
